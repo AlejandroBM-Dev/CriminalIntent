@@ -38,9 +38,12 @@ class CrimeDetailViewModel(crimeId: UUID) : ViewModel() {
         }
     }
 
+    fun addCrime(crime: Crime){
+        crimeRepository.addCrime(crime)
+    }
+
     override fun onCleared() {
         super.onCleared()
         crime.value?.let { crimeRepository.updateCrime(it) }
-
     }
 }

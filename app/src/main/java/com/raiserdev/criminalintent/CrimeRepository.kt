@@ -4,16 +4,14 @@ import android.content.Context
 import androidx.room.Room
 import com.raiserdev.criminalintent.database.CrimeDatabase
 import com.raiserdev.criminalintent.models.Crime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import java.util.*
 
 private const val DATABASE_NAME = "crime-database"
 
-class CrimeRepository private constructor(
+class CrimeRepository @OptIn(DelicateCoroutinesApi::class)
+private constructor(
     context: Context,
     private val coroutineScope: CoroutineScope = GlobalScope){
 
@@ -23,7 +21,7 @@ class CrimeRepository private constructor(
             CrimeDatabase::class.java,
             DATABASE_NAME
         )
-        .createFromAsset(DATABASE_NAME)
+        //.createFromAsset(DATABASE_NAME)
         .build()
 
     fun getCrimes() : Flow<List<Crime>> = database.crimeDao().getCrimes()
@@ -32,6 +30,12 @@ class CrimeRepository private constructor(
     fun updateCrime(crime: Crime){
         coroutineScope.launch(Dispatchers.IO) {
             database.crimeDao().updateCrime(crime)
+        }
+    }
+
+    fun addCrime(crime: Crime){
+        coroutineScope.launch(Dispatchers.IO) {
+            database.crimeDao().addCrime(crime)
         }
     }
 
