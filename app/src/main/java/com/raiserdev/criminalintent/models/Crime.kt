@@ -13,5 +13,7 @@ data class Crime(
     @ColumnInfo(name = "date")
     val date: Date,
     @ColumnInfo(name = "isSolved")
-    val isSolved: Boolean
+    val isSolved: Boolean,
+    @ColumnInfo(name = "suspect")
+    val suspect: String
 )

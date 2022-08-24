@@ -3,6 +3,7 @@ package com.raiserdev.criminalintent
 import android.content.Context
 import androidx.room.Room
 import com.raiserdev.criminalintent.database.CrimeDatabase
+import com.raiserdev.criminalintent.database.migration_1_2
 import com.raiserdev.criminalintent.models.Crime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ private constructor(
             context.applicationContext,
             CrimeDatabase::class.java,
             DATABASE_NAME
-        )
+        ).addMigrations(migration_1_2)
         //.createFromAsset(DATABASE_NAME)
         .build()
 

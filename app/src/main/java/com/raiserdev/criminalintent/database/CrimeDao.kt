@@ -1,9 +1,6 @@
 package com.raiserdev.criminalintent.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.raiserdev.criminalintent.models.Crime
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -22,4 +19,8 @@ interface CrimeDao {
 
     @Insert
     fun addCrime(crime: Crime)
+
+    @Delete
+    fun deleteCrime(crime: Crime)
+
 }
