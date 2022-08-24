@@ -21,7 +21,8 @@ private constructor(
             context.applicationContext,
             CrimeDatabase::class.java,
             DATABASE_NAME
-        ).addMigrations(migration_1_2)
+        )
+        //.addMigrations(migration_1_2)
         //.createFromAsset(DATABASE_NAME)
         .build()
 
