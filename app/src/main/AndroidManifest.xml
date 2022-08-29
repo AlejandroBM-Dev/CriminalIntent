@@ -32,4 +32,5 @@
             <data android:mimeType="vnd.android.cursor.dir/contact"/>
         </intent>
     </queries>
+
 </manifest>
