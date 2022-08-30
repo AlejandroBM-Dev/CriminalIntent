@@ -24,12 +24,24 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:authorities="com.raiserdev.criminalintent.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files" />
+        </provider>
     </application>
 
     <queries>
         <intent>
             <action android:name="android.intent.action.PICK"/>
             <data android:mimeType="vnd.android.cursor.dir/contact"/>
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE"/>
         </intent>
     </queries>
 

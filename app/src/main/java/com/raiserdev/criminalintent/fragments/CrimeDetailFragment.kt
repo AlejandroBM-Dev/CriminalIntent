@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -26,6 +27,7 @@ import com.raiserdev.criminalintent.databinding.FragmentCrimeDetailBinding
 import com.raiserdev.criminalintent.models.Crime
 import com.raiserdev.criminalintent.models.CrimeDetailViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 
 private const val DATE_FORMAT = "EEE, MMM, dd"
@@ -33,6 +35,8 @@ class CrimeDetailFragment : Fragment(){
 
     private var _binding : FragmentCrimeDetailBinding?= null
     private val binding get() = checkNotNull(_binding){  "Cannot access binding because it is null. Is the view visible?" }
+
+    private var photoName : String ?= null
 
     private val args : CrimeDetailFragmentArgs by navArgs()
 
@@ -47,6 +51,16 @@ class CrimeDetailFragment : Fragment(){
         uri?.let { parseContactSelection(it) }
     }
 
+    private val takePhoto = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ){ didTakePhoto : Boolean ->
+        //Handle the result
+        if (didTakePhoto && photoName != null){
+            crimeDetailViewModel.updateCrime { oldCrime ->
+                oldCrime.copy(photoFileName = photoName)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,6 +101,29 @@ class CrimeDetailFragment : Fragment(){
             )
 
             crimeSuspect.isEnabled = canResolveIntent(selectSuspectIntent)
+
+            crimeCamera.setOnClickListener {
+                photoName = "IMG_${Date()}.JPG"
+                val photoFile = File(requireContext().applicationContext.filesDir,
+                    photoName)
+                val photoUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.raiserdev.criminalintent.fileprovider",
+                    photoFile
+                )
+
+                takePhoto.launch(photoUri)
+            }
+
+            val captureImageIntent =
+                takePhoto.
+                contract.
+                createIntent(
+                    requireContext(),
+                    Uri.EMPTY
+                )
+
+            crimeCamera.isEnabled = canResolveIntent(captureImageIntent)
 
         }
 

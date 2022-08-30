@@ -15,5 +15,7 @@ data class Crime(
     @ColumnInfo(name = "isSolved")
     val isSolved: Boolean,
     @ColumnInfo(name = "suspect")
-    val suspect: String
+    val suspect: String,
+    @ColumnInfo(name = "photoFileName")
+    val photoFileName: String ?= null
 )
