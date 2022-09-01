@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.view.doOnLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -26,6 +27,7 @@ import com.raiserdev.criminalintent.R
 import com.raiserdev.criminalintent.databinding.FragmentCrimeDetailBinding
 import com.raiserdev.criminalintent.models.Crime
 import com.raiserdev.criminalintent.models.CrimeDetailViewModel
+import com.raiserdev.criminalintent.utils.PictureUtils
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
@@ -182,6 +184,8 @@ class CrimeDetailFragment : Fragment(){
             crimeSuspect.text = crime.suspect.ifEmpty {
                 getString(R.string.crime_suspect_text)
             }
+
+            updatePhoto(crime.photoFileName)
         }
     }
 
@@ -226,5 +230,29 @@ class CrimeDetailFragment : Fragment(){
                 PackageManager.MATCH_DEFAULT_ONLY
             )
         return resolvedActivity != null
+    }
+
+    private fun updatePhoto(photoFileName: String?){
+        if (binding.crimePhoto.tag != photoFileName){
+            val photoFile = photoFileName?.let {
+                File(requireContext().applicationContext.filesDir,it)
+            }
+
+            if (photoFile?.exists() == true){
+                binding.crimePhoto.doOnLayout { measuredView ->
+
+                    val scaleBitmap = PictureUtils().getScaledBitmap(
+                        photoFile.path,
+                        measuredView.width,
+                        measuredView.height
+                    )
+                    binding.crimePhoto.setImageBitmap(scaleBitmap)
+                    binding.crimePhoto.tag = photoFileName
+                }
+            }else{
+                binding.crimePhoto.setImageBitmap(null)
+                binding.crimePhoto.tag = null
+            }
+        }
     }
 }
